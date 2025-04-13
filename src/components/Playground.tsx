@@ -31,7 +31,7 @@ class Playground extends React.Component {
     soundUrlList: Array.from({ length: 12 }, (_, i) => `/sound/yafu${(i + 1).toString().padStart(3, '0')}.mp3`),
   };
 
-  audioMuted: boolean = isSafari();
+  isAudioLag: boolean = isSafari();
 
   mamiImgList: string[] = [
     'Mami01',
@@ -63,12 +63,10 @@ class Playground extends React.Component {
     }
 
     // Load sound files
-    if(!this.audioMuted) {
-        this.state.soundUrlList.forEach((soundUrl) => {
-            const audio = new Audio(soundUrl);
-            audio.preload = 'auto';
-        });
-    }
+    this.state.soundUrlList.forEach((soundUrl) => {
+        const audio = new Audio(soundUrl);
+        audio.preload = 'auto';
+    });
 
     // Save count to localStorage every 2 seconds
     this.saveInterval = setInterval(() => {
@@ -92,6 +90,7 @@ class Playground extends React.Component {
   }
 
   saveInterval: ReturnType<typeof setInterval> | undefined;
+  currentPlaySoundCount: number = 0;
 
   playSound = () => {
     const { count, mamiList, soundUrlList } = this.state;
@@ -121,9 +120,21 @@ class Playground extends React.Component {
 
     this.setState({ mamiList: [...mamiList, MamiElement] });
 
-    if(!this.audioMuted) {
+    if (!this.isAudioLag) {
         const sound = new Audio(soundUrlList[randomIndex]);
         sound.play();
+    } else if (this.isAudioLag && this.currentPlaySoundCount < 4) {
+        this.currentPlaySoundCount++;
+        const sound = new Audio(soundUrlList[randomIndex]);
+        sound.play();
+
+        // ลดจำนวน currentPlaySoundCount เมื่อเสียงเล่นจบ
+        sound.addEventListener('ended', () => {
+            this.currentPlaySoundCount--;
+            if (this.currentPlaySoundCount < 0) {
+                this.currentPlaySoundCount = 0;
+            }
+        });
     }
 
     setTimeout(() => {
