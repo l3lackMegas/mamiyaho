@@ -38,6 +38,8 @@ class Playground extends React.Component {
     'MamiTheBean'
   ]
 
+  apiUrl: string = 'https://api.mamiyaho.com/';
+
   durationList: number[] = [
     1, // yaafu001.mp3
     2, // yaafu002.mp3
@@ -55,7 +57,7 @@ class Playground extends React.Component {
   ];
 
   componentDidMount() {
-    this.setState({ globalCount: 100000 });
+    this.getLastYaho();
 
     const storedCount = localStorage.getItem('count');
     if (storedCount) {
@@ -71,7 +73,8 @@ class Playground extends React.Component {
     // Save count to localStorage every 2 seconds
     this.saveInterval = setInterval(() => {
       localStorage.setItem('count', this.state.count.toString());
-    }, 2000);
+      this.syncYahoo();
+    }, 5000);
 
     // Add event listeners
     window.addEventListener('click', this.increment);
@@ -91,6 +94,39 @@ class Playground extends React.Component {
 
   saveInterval: ReturnType<typeof setInterval> | undefined;
   currentPlaySoundCount: number = 0;
+
+  async getLastYaho() {
+    const response = await fetch(this.apiUrl);
+    const data = await response.json();
+
+    if(data.status === true) {
+      this.setState({ globalCount: data.data.yaho });
+    }
+    return data;
+  }
+
+  async syncYahoo() {
+    const { collectCount } = this.state;
+    if(collectCount === 0) return;
+
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ yaho: collectCount }),
+    });
+
+    const data = await response.json();
+
+    if(data.status === true) {
+      this.setState({
+        globalCount: data.data.yaho,
+        collectCount: 0,
+      });
+    }
+    return data;
+  }
 
   playSound = () => {
     const { count, mamiList, soundUrlList } = this.state;
@@ -122,6 +158,7 @@ class Playground extends React.Component {
 
     if (!this.isAudioLag) {
         const sound = new Audio(soundUrlList[randomIndex]);
+        sound.volume = 0.4; // Set volume to 50%
         sound.play();
     } else if (this.isAudioLag && this.currentPlaySoundCount < 4) {
         this.currentPlaySoundCount++;
