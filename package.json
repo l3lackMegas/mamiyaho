@@ -1,8 +1,10 @@
 {
-  "name": "mamiyafu",
+  "name": "mamiyaho",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "yarn@3.6.0",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
