@@ -183,6 +183,9 @@ class Playground extends React.Component {
     setTimeout(() => {
       this.setState((prevState: IPlaygroundState) => {
         const newList = prevState.mamiList.filter((mami) => mami.exp > Date.now());
+        let newCollectCount = prevState.collectCount + 1;
+        
+        if(newCollectCount > 500) newCollectCount = 500; // Limit to 500
         return {
           mamiList: newList,
           collectCount: prevState.collectCount + 1,
