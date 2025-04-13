@@ -74,7 +74,7 @@ class Playground extends React.Component {
     this.saveInterval = setInterval(() => {
       localStorage.setItem('count', this.state.count.toString());
       this.syncYahoo();
-    }, 5000);
+    }, 10000);
 
     // Add event listeners
     window.addEventListener('click', this.increment);
