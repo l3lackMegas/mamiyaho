@@ -1,233 +1,57 @@
 import React from 'react';
 import './App.css';
-import { AnimatePresence, motion } from 'motion/react';
-import MamiTheBean from './components/Mami/MamiTheBean';
-import MamiBanner from './components/Layout/MamiCredit';
-import Mami01 from './components/Mami/Mami01';
+import Playground from './components/Playground';
+import { motion } from 'motion/react';
 
-interface IAppState {
-  globalCount: number;
-  collectCount: number;
-  count: number;
-  mamiList: {
-    id: string;
-    imgType: string;
-    top: number;
-    left: number;
-    size: number;
-    rotate: number;
-    scale: number;
-    exp: number;
-  }[];
-  soundUrlList: string[];
-}
+function App() {
 
-class App extends React.Component {
-  state: IAppState = {
-    globalCount: 0,
-    collectCount: 0,
-    count: 0,
-    mamiList: [],
-    soundUrlList: Array.from({ length: 12 }, (_, i) => `/sound/yafu${(i + 1).toString().padStart(3, '0')}.mp3`),
-  };
+  const [showInformationModal, setShowInformationModal] = React.useState(false);
 
-  mamiImgList: string[] = [
-    'Mami01',
-    'MamiTheBean'
-  ]
-
-  durationList: number[] = [
-    1, // yaafu001.mp3
-    2, // yaafu002.mp3
-    1, // yaafu003.mp3
-    2, // yaafu004.mp3
-    2, // yaafu005.mp3
-    3, // yaafu006.mp3
-    1, // yaafu007.mp3
-    1, // yaafu008.mp3
-    2, // yaafu009.mp3
-    3, // yaafu010.mp3
-    2, // yaafu011.mp3
-    1, // yaafu012.mp3
-    1, // yaafu013.mp3
-  ];
-
-  componentDidMount() {
-    this.setState({ globalCount: 100000 });
-
-    const storedCount = localStorage.getItem('count');
-    if (storedCount) {
-      this.setState({ count: parseInt(storedCount, 10) });
-    }
-
-    // Load sound files
-    this.state.soundUrlList.forEach((soundUrl) => {
-      const audio = new Audio(soundUrl);
-      audio.preload = 'auto';
-    });
-
-    // Save count to localStorage every 2 seconds
-    this.saveInterval = setInterval(() => {
-      localStorage.setItem('count', this.state.count.toString());
-    }, 2000);
-
-    // Add event listeners
-    window.addEventListener('click', this.increment);
-    window.addEventListener('keydown', this.increment);
-    window.addEventListener('touchstart', this.increment);
-  }
-
-  componentWillUnmount() {
-    // Clear interval
-    clearInterval(this.saveInterval);
-
-    // Remove event listeners
-    window.removeEventListener('click', this.increment);
-    window.removeEventListener('keydown', this.increment);
-    window.removeEventListener('touchstart', this.increment);
-  }
-
-  saveInterval: ReturnType<typeof setInterval> | undefined;
-
-  playSound = () => {
-    const { count, mamiList, soundUrlList } = this.state;
-
-    const randomIndex = Math.floor(Math.random() * soundUrlList.length);
-    const sound = new Audio(soundUrlList[randomIndex]);
-
-    const soundDuration = this.durationList[randomIndex] * 1000; // Convert to milliseconds
-
-    const mamiSize = Math.max(200, Math.random() * (window.screen.height / 2));
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-
-    // คำนวณตำแหน่งที่ไม่ให้หลุดออกจากหน้าจอ
-    const top = Math.max(0, Math.min(Math.random() * screenHeight - mamiSize, screenHeight - mamiSize));
-    const left = Math.max(0, Math.min(Math.random() * screenWidth - mamiSize, screenWidth - mamiSize));
-
-    const MamiElement = {
-      id: `mami-${count}`,
-      imgType: this.mamiImgList[Math.floor(Math.random() * this.mamiImgList.length)],
-      top,
-      left,
-      size: mamiSize,
-      rotate: Math.random() * 360,
-      scale: Math.max(0.7, Math.random() * 1),
-      exp: Date.now() + soundDuration,
-    };
-
-    this.setState({ mamiList: [...mamiList, MamiElement] });
-
-    sound.play();
-
-    setTimeout(() => {
-      this.setState((prevState: IAppState) => {
-        const newList = prevState.mamiList.filter((mami) => mami.exp > Date.now());
-        return {
-          mamiList: newList,
-          collectCount: prevState.collectCount + 1,
-        };
-      });
-    }, soundDuration + 100);
-  };
-
-  increment = () => {
-    this.playSound();
-    this.setState((prevState: IAppState) => ({ count: prevState.count + 1 }));
-  };
-
-  render() {
-    const { globalCount, collectCount, count, mamiList } = this.state;
-
+  const InfomationIcon = () => {
     return (
-      <>
-        <motion.div className="topCenterContaienr">
-          <motion.div className="globalCounterTxt"
-            key={globalCount + collectCount}
-            initial={{
-              opacity: 0.5,
-              scale: 1.25,
-              rotate: Math.round(Math.random() * 2) % 2 === 0 ? -10 : 10,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              rotate: 0,
-            }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            transition={{
-              duration: 0.05,
-              ease: [0.4, 0, 0.2, 1],
-            }}
-          >
-            <p>{numFormatter(globalCount + collectCount)}</p>
-            <p className="subTxt">ヤッホー！</p>
-          </motion.div>
-        </motion.div>
-        <motion.div className="centerContainer">
-          <motion.div
-            key={count}
-            className="counterTxt"
-            initial={{
-              opacity: 0.5,
-              scale: 1.25,
-              rotate: Math.round(Math.random() * 2) % 2 === 0 ? -10 : 10,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              rotate: 0,
-            }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            transition={{
-              duration: 0.05,
-              ease: [0.4, 0, 0.2, 1],
-            }}
-          >
-            {numFormatter(count)}
-          </motion.div>
-        </motion.div>
-
-        <motion.div className="mami-playground">
-          <motion.div className="container-area">
-            <AnimatePresence mode="popLayout">
-              {mamiList.map((mamiElm) => (
-                <motion.div
-                  key={mamiElm.id}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0.5,
-                    transition: {
-                      duration: 0.25,
-                    },
-                  }}
-                >
-                  {mamiElm.imgType === 'Mami01' && (
-                    <Mami01 {...mamiElm} />
-                  )}
-                  {mamiElm.imgType === 'MamiTheBean' && (
-                    <MamiTheBean {...mamiElm} />
-                  )}
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        </motion.div>
-
-        <MamiBanner/>
-      </>
+      <svg className="informationIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+        <path d="M12 16v-4"></path>
+        <path d="M12 8h0"></path>
+      </svg>
     );
-  }
+  };
+  return <>
+    <div className="informationIcon"
+      onClick={() => {
+        setShowInformationModal(!showInformationModal);
+      }}
+    ><InfomationIcon/></div>
+
+    {showInformationModal && (
+      <div className='informationModal'>
+        <motion.div className='informationModalContent'
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.2 }}
+        >
+          <h2 className='informationModalTitle'>About</h2>
+          <div className='informationModalText'>
+            This is a fan site dedicated to the HOT-GAL <a href="https://www.youtube.com/@MamiMumeiCh">MamiMumei</a> from Papa <a href="https://www.youtube.com/@NAK3DS">NAK3DS</a>'s NAKAMA crew.
+            Please support them by subscribing through their various channels and purchasing their merchandise!
+            <br /><br />
+            This website uses cookies to record your score count and may collect anonymous website usage statistics through Cloudflare (we need Cloudflare to save costs for this Hobby Project).
+            <br /><br />
+            We do not accept any donations!
+            <br />
+            If you want to support us, please send your support to the Talents instead,
+            <br />
+            or you can support us by contributing code on <a href="https://github.com/l3lackMegas/mamiyahoo" target='_blank'>GitHub</a>.
+          </div>
+          <br />
+          <button className='informationModalCloseButton' onClick={() => setShowInformationModal(false)}>Close</button>
+        </motion.div>
+        <div className='informationModalOverlay' onClick={() => setShowInformationModal(false)}></div>
+      </div>
+    )}
+    <Playground />
+  </>;
 }
 
 export default App;
-
-const numFormatter = (num: number) => {
-  return Intl.NumberFormat('en-US', {
-    notation: 'standard',
-    compactDisplay: 'short',
-    maximumFractionDigits: 1,
-  }).format(num);
-};
