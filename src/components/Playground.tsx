@@ -1,7 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import MamiTheBean from './Mami/MamiTheBean';
-import MamiBanner from './Layout/MamiCredit';
 import Mami01 from './Mami/Mami01';
 import { isSafari, numFormatter } from '../helper';
 
@@ -79,7 +78,6 @@ class Playground extends React.Component {
     // Add event listeners
     window.addEventListener('click', this.increment);
     window.addEventListener('keydown', this.increment);
-    window.addEventListener('touchstart', this.increment);
   }
 
   componentWillUnmount() {
@@ -89,7 +87,6 @@ class Playground extends React.Component {
     // Remove event listeners
     window.removeEventListener('click', this.increment);
     window.removeEventListener('keydown', this.increment);
-    window.removeEventListener('touchstart', this.increment);
   }
 
   saveInterval: ReturnType<typeof setInterval> | undefined;
@@ -143,35 +140,44 @@ class Playground extends React.Component {
     const top = Math.max(0, Math.min(Math.random() * screenHeight - mamiSize, screenHeight - mamiSize));
     const left = Math.max(0, Math.min(Math.random() * screenWidth - mamiSize, screenWidth - mamiSize));
 
-    const MamiElement = {
-      id: `mami-${count}`,
-      imgType: this.mamiImgList[Math.floor(Math.random() * this.mamiImgList.length)],
-      top,
-      left,
-      size: mamiSize,
-      rotate: Math.random() * 360,
-      scale: Math.max(0.7, Math.random() * 1),
-      exp: Date.now() + soundDuration,
-    };
-
-    this.setState({ mamiList: [...mamiList, MamiElement] });
+    const addMamiImage = () => {
+      const MamiElement = {
+        id: `mami-${count}`,
+        imgType: this.mamiImgList[Math.floor(Math.random() * this.mamiImgList.length)],
+        top,
+        left,
+        size: mamiSize,
+        rotate: Math.random() * 360,
+        scale: Math.max(0.7, Math.random() * 1),
+        exp: Date.now() + soundDuration,
+      };
+  
+      this.setState({ mamiList: [...mamiList, MamiElement] });
+    }
 
     if (!this.isAudioLag) {
-        const sound = new Audio(soundUrlList[randomIndex]);
-        sound.volume = 0.4; // Set volume to 50%
-        sound.play();
-    } else if (this.isAudioLag && this.currentPlaySoundCount < 4) {
-        this.currentPlaySoundCount++;
-        const sound = new Audio(soundUrlList[randomIndex]);
-        sound.play();
+      addMamiImage();
+    } else if (this.isAudioLag && mamiList.length < 15) {
+      addMamiImage();
+    }
 
-        // ลดจำนวน currentPlaySoundCount เมื่อเสียงเล่นจบ
-        sound.addEventListener('ended', () => {
-            this.currentPlaySoundCount--;
-            if (this.currentPlaySoundCount < 0) {
-                this.currentPlaySoundCount = 0;
-            }
-        });
+    if (!this.isAudioLag) {
+      addMamiImage();
+      const sound = new Audio(soundUrlList[randomIndex]);
+      sound.volume = 0.4; // Set volume to 50%
+      sound.play();
+    } else if (this.isAudioLag && this.currentPlaySoundCount < 4) {
+      this.currentPlaySoundCount++;
+      const sound = new Audio(soundUrlList[randomIndex]);
+      sound.play();
+
+      // ลดจำนวน currentPlaySoundCount เมื่อเสียงเล่นจบ
+      sound.addEventListener('ended', () => {
+          this.currentPlaySoundCount--;
+          if (this.currentPlaySoundCount < 0) {
+              this.currentPlaySoundCount = 0;
+          }
+      });
     }
 
     setTimeout(() => {
@@ -195,6 +201,17 @@ class Playground extends React.Component {
 
     return (
       <>
+        <div
+          onTouchStart={this.increment}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1500,
+          }}
+        ></div>
         <motion.div className="topCenterContaienr">
           <motion.div className="globalCounterTxt"
             key={globalCount + collectCount}
@@ -269,8 +286,6 @@ class Playground extends React.Component {
             </AnimatePresence>
           </motion.div>
         </motion.div>
-
-        <MamiBanner/>
       </>
     );
   }

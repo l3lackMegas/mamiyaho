@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Playground from './components/Playground';
 import { motion } from 'motion/react';
+import MamiBanner from './components/Layout/MamiCredit';
 
 function App() {
 
@@ -50,6 +51,8 @@ function App() {
         <div className='informationModalOverlay' onClick={() => setShowInformationModal(false)}></div>
       </div>
     )}
+
+    <MamiBanner/>
     <Playground />
   </>;
 }
