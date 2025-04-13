@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import MamiTheBean from './Mami/MamiTheBean';
 import MamiBanner from './Layout/MamiCredit';
 import Mami01 from './Mami/Mami01';
-import { numFormatter } from '../helper';
+import { isSafari, numFormatter } from '../helper';
 
 interface IPlaygroundState {
   globalCount: number;
@@ -30,6 +30,8 @@ class Playground extends React.Component {
     mamiList: [],
     soundUrlList: Array.from({ length: 12 }, (_, i) => `/sound/yafu${(i + 1).toString().padStart(3, '0')}.mp3`),
   };
+
+  audioMuted: boolean = isSafari();
 
   mamiImgList: string[] = [
     'Mami01',
@@ -61,10 +63,12 @@ class Playground extends React.Component {
     }
 
     // Load sound files
-    this.state.soundUrlList.forEach((soundUrl) => {
-      const audio = new Audio(soundUrl);
-      audio.preload = 'auto';
-    });
+    if(!this.audioMuted) {
+        this.state.soundUrlList.forEach((soundUrl) => {
+            const audio = new Audio(soundUrl);
+            audio.preload = 'auto';
+        });
+    }
 
     // Save count to localStorage every 2 seconds
     this.saveInterval = setInterval(() => {
@@ -93,7 +97,6 @@ class Playground extends React.Component {
     const { count, mamiList, soundUrlList } = this.state;
 
     const randomIndex = Math.floor(Math.random() * soundUrlList.length);
-    const sound = new Audio(soundUrlList[randomIndex]);
 
     const soundDuration = this.durationList[randomIndex] * 1000; // Convert to milliseconds
 
@@ -118,7 +121,10 @@ class Playground extends React.Component {
 
     this.setState({ mamiList: [...mamiList, MamiElement] });
 
-    sound.play();
+    if(!this.audioMuted) {
+        const sound = new Audio(soundUrlList[randomIndex]);
+        sound.play();
+    }
 
     setTimeout(() => {
       this.setState((prevState: IPlaygroundState) => {
