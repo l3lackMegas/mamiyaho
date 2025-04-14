@@ -159,7 +159,7 @@ class Playground extends React.Component {
 
     // คำนวณตำแหน่งที่ไม่ให้หลุดออกจากหน้าจอ
     const top = Math.max(0, Math.min(Math.random() * screenHeight - mamiSize, screenHeight - mamiSize));
-    const left = Math.max(0, Math.min(Math.random() * screenWidth - mamiSize, screenWidth - mamiSize));
+    const left = Math.random() * (screenWidth - mamiSize); // Adjusted calculation for left
 
     const addMamiImage = () => {
       const MamiElement = {
