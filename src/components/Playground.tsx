@@ -75,7 +75,11 @@ class Playground extends React.Component {
     this.saveInterval = setInterval(() => {
       localStorage.setItem('count', this.state.count.toString());
       this.syncYahoo();
-    }, 10000);
+    }, 10e3);
+
+    this.getLastYahoInterval = setInterval(() => {
+      this.getLastYaho();
+    }, 30e3);
 
     // Add event listeners
     window.addEventListener('click', this.increment);
@@ -86,6 +90,7 @@ class Playground extends React.Component {
   componentWillUnmount() {
     // Clear interval
     clearInterval(this.saveInterval);
+    clearInterval(this.getLastYahoInterval);
 
     // Remove event listeners
     window.removeEventListener('click', this.increment);
@@ -105,6 +110,7 @@ class Playground extends React.Component {
   };
 
   saveInterval: ReturnType<typeof setInterval> | undefined;
+  getLastYahoInterval: ReturnType<typeof setInterval> | undefined;
   currentPlaySoundCount: number = 0;
 
   async getLastYaho() {
