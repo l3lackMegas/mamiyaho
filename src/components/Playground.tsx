@@ -55,6 +55,8 @@ class Playground extends React.Component {
     1, // yaafu013.mp3
   ];
 
+  pressedKeys: Set<string> = new Set(); // Track currently pressed keys
+
   componentDidMount() {
     this.getLastYaho();
 
@@ -65,8 +67,8 @@ class Playground extends React.Component {
 
     // Load sound files
     this.state.soundUrlList.forEach((soundUrl) => {
-        const audio = new Audio(soundUrl);
-        audio.preload = 'auto';
+      const audio = new Audio(soundUrl);
+      audio.preload = 'auto';
     });
 
     // Save count to localStorage every 2 seconds
@@ -77,7 +79,8 @@ class Playground extends React.Component {
 
     // Add event listeners
     window.addEventListener('click', this.increment);
-    window.addEventListener('keydown', this.increment);
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
   }
 
   componentWillUnmount() {
@@ -86,8 +89,20 @@ class Playground extends React.Component {
 
     // Remove event listeners
     window.removeEventListener('click', this.increment);
-    window.removeEventListener('keydown', this.increment);
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keyup', this.handleKeyUp);
   }
+
+  handleKeyDown = (event: KeyboardEvent) => {
+    if (!this.pressedKeys.has(event.key)) {
+      this.pressedKeys.add(event.key); // Add key to the set
+      this.increment(); // Trigger increment only once per key press
+    }
+  };
+
+  handleKeyUp = (event: KeyboardEvent) => {
+    this.pressedKeys.delete(event.key); // Remove key from the set when released
+  };
 
   saveInterval: ReturnType<typeof setInterval> | undefined;
   currentPlaySoundCount: number = 0;
