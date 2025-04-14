@@ -32,21 +32,23 @@ function App() {
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.2 }}
         >
-          <h2 className='informationModalTitle'>About</h2>
-          <div className='informationModalText'>
-            This is a fan site dedicated to the <a href="https://www.youtube.com/@MamiMumeiCh">MamiMumei</a> from Papa <a href="https://www.youtube.com/@NAK3DS">NAK3DS</a>'s NAKAMA crew.
-            Please support them by subscribing through their various channels and purchasing their merchandise!
-            <br /><br />
-            This website uses cookies to record your score count and may collect anonymous website usage statistics through Cloudflare. (we need Cloudflare to save costs for this Hobby Project)
-            <br /><br />
-            We do not accept any donations!
+          <div className="informationCenter">
+            <h2 className='informationModalTitle'>About</h2>
+            <div className='informationModalText'>
+              This is a fan site dedicated to the <a href="https://www.youtube.com/@MamiMumeiCh">MamiMumei</a> from Papa <a href="https://www.youtube.com/@NAK3DS">NAK3DS</a>'s NAKAMA crew.
+              Please support them by subscribing through their various channels and purchasing their merchandise!
+              <br /><br />
+              This website uses cookies to record your score count and may collect anonymous website usage statistics through Cloudflare. (we need Cloudflare to save costs for this Hobby Project)
+              <br /><br />
+              We do not accept any donations!
+              <br />
+              If you want to support us, please send your support to the Talents instead,
+              <br />
+              or you can help us by sharing your ideas, reporting bugs, or jumping in to contribute code on our <a href="https://github.com/l3lackMegas/mamiyahoo/issues" target='_blank'>GitHub</a>!
+            </div>
             <br />
-            If you want to support us, please send your support to the Talents instead,
-            <br />
-            or you can help us by sharing your ideas, reporting bugs, or jumping in to contribute code on our <a href="https://github.com/l3lackMegas/mamiyahoo/issues" target='_blank'>GitHub</a>!
+            <button className='informationModalCloseButton' onClick={() => setShowInformationModal(false)}>Close</button>
           </div>
-          <br />
-          <button className='informationModalCloseButton' onClick={() => setShowInformationModal(false)}>Close</button>
         </motion.div>
         <div className='informationModalOverlay' onClick={() => setShowInformationModal(false)}></div>
       </div>
