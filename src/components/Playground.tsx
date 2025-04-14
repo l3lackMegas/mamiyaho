@@ -223,6 +223,7 @@ class Playground extends React.Component {
   render() {
     const { globalCount, collectCount, count, mamiList } = this.state;
 
+    const globalCountDisplay = globalCount + collectCount;
     return (
       <>
         <div
@@ -238,7 +239,7 @@ class Playground extends React.Component {
         ></div>
         <motion.div className="topCenterContaienr">
           <motion.div className="globalCounterTxt"
-            key={globalCount + collectCount}
+            key={globalCountDisplay}
             initial={{
               opacity: 0.5,
               scale: 1.25,
@@ -255,7 +256,8 @@ class Playground extends React.Component {
               ease: [0.4, 0, 0.2, 1],
             }}
           >
-            <p>{numFormatter(globalCount + collectCount)}</p>
+            {globalCountDisplay === 0 && <p>--</p>}
+            {globalCountDisplay > 0 && <p>{numFormatter(globalCountDisplay)}</p>}
             <p className="subTxt">ヤッホー！</p>
           </motion.div>
         </motion.div>
