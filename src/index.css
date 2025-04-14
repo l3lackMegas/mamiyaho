@@ -88,7 +88,7 @@ button:focus-visible {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  z-index: 4000;
+  z-index: 4100;
 }
 
 .informationModal {
