@@ -244,11 +244,13 @@ class Playground extends React.Component {
               opacity: 0.5,
               scale: 1.25,
               rotate: Math.round(Math.random() * 2) % 2 === 0 ? -10 : 10,
+              color: 'rgb(57, 164, 154)',
             }}
             animate={{
               opacity: 1,
               scale: 1,
               rotate: 0,
+              color: '#000000'
             }}
             exit={{ opacity: 0, scale: 0.5 }}
             transition={{
@@ -266,14 +268,16 @@ class Playground extends React.Component {
             key={count}
             className="counterTxt"
             initial={{
-              opacity: 0.5,
+              opacity: 1,
               scale: 1.25,
               rotate: Math.round(Math.random() * 2) % 2 === 0 ? -10 : 10,
+              color: '#81D8D0',
             }}
             animate={{
               opacity: 1,
               scale: 1,
               rotate: 0,
+              color: '#000000'
             }}
             exit={{ opacity: 0, scale: 0.5 }}
             transition={{
