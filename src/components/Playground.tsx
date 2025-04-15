@@ -57,6 +57,8 @@ class Playground extends React.Component {
 
   pressedKeys: Set<string> = new Set(); // Track currently pressed keys
 
+  lastRandomIndex: number | null = null; // Track the last random index
+
   componentDidMount() {
     this.getLastYaho();
 
@@ -149,7 +151,12 @@ class Playground extends React.Component {
   playSound = () => {
     const { count, mamiList, soundUrlList } = this.state;
 
-    const randomIndex = Math.floor(Math.random() * soundUrlList.length);
+    let randomIndex;
+    do {
+      randomIndex = Math.floor(Math.random() * soundUrlList.length);
+    } while (randomIndex === this.lastRandomIndex); // Ensure it's not the same as the last index
+
+    this.lastRandomIndex = randomIndex; // Update the last random index
 
     const soundDuration = this.durationList[randomIndex] * 1000; // Convert to milliseconds
 
@@ -172,9 +179,9 @@ class Playground extends React.Component {
         scale: Math.max(0.7, Math.random() * 1),
         exp: Date.now() + soundDuration,
       };
-  
+
       this.setState({ mamiList: [...mamiList, MamiElement] });
-    }
+    };
 
     if (!this.isAudioLag) {
       addMamiImage();
@@ -194,10 +201,10 @@ class Playground extends React.Component {
 
       // ลดจำนวน currentPlaySoundCount เมื่อเสียงเล่นจบ
       sound.addEventListener('ended', () => {
-          this.currentPlaySoundCount--;
-          if (this.currentPlaySoundCount < 0) {
-              this.currentPlaySoundCount = 0;
-          }
+        this.currentPlaySoundCount--;
+        if (this.currentPlaySoundCount < 0) {
+          this.currentPlaySoundCount = 0;
+        }
       });
     }
 
@@ -205,8 +212,8 @@ class Playground extends React.Component {
       this.setState((prevState: IPlaygroundState) => {
         const newList = prevState.mamiList.filter((mami) => mami.exp > Date.now());
         let newCollectCount = prevState.collectCount + 1;
-        
-        if(newCollectCount > 500) newCollectCount = 500; // Limit to 500
+
+        if (newCollectCount > 500) newCollectCount = 500; // Limit to 500
         return {
           mamiList: newList,
           collectCount: prevState.collectCount + 1,
