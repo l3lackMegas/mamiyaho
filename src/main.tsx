@@ -9,7 +9,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <div style={{display: 'none'}}>
       <GoogleReCaptchaProvider
-        type="v3"
+        type="v2-invisible"
         siteKey={import.meta.env.VITE_CAPTCHA_KEY ?? ''}
       >
         <App />
