@@ -35,7 +35,7 @@ function App() {
           <div className="informationCenter">
             <h2 className='informationModalTitle'>About</h2>
             <div className='informationModalText'>
-              This is a fan site dedicated to the <a href="https://www.youtube.com/@MamiMumeiCh">MamiMumei</a> from Papa <a href="https://www.youtube.com/@NAK3DS">NAK3DS</a>'s NAKAMA crew.
+              This is a fan site dedicated to <a href="https://www.youtube.com/@MamiMumeiCh">MamiMumei</a>, the gal girl from Papa <a href="https://www.youtube.com/@NAK3DS">NAK3DS</a>'s NAKAMA crew.
               Please support them by subscribing through their various channels and purchasing their merchandise!
               <br /><br />
               This website uses cookies to record your score count and may collect anonymous website usage statistics through Cloudflare. (we need Cloudflare to save costs for this Hobby Project)
