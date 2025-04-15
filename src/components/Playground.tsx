@@ -2,9 +2,17 @@ import React from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import MamiTheBean from './Mami/MamiTheBean';
 import Mami01 from './Mami/Mami01';
-import { isSafari, numFormatter } from '../helper';
+import { isSafari, numFormatter } from '../utils/helper';
+import qs from 'query-string';
+import {
+  client as echoClient,
+  clientBaseUrl as echoClientBaseUrl
+} from '../utils/echo';
+import { KyInstance } from 'ky';
 
 interface IPlaygroundState {
+  echoToken: string;
+
   globalCount: number;
   collectCount: number;
   count: number;
@@ -23,12 +31,17 @@ interface IPlaygroundState {
 
 class Playground extends React.Component {
   state: IPlaygroundState = {
+    echoToken: '',
     globalCount: 0,
     collectCount: 0,
     count: 0,
     mamiList: [],
     soundUrlList: Array.from({ length: 12 }, (_, i) => `/sound/yafu${(i + 1).toString().padStart(3, '0')}.mp3`),
   };
+
+  echoClient: KyInstance = echoClient;
+  echoApiUrl: string = `${echoClientBaseUrl}/leaderboard`;
+  echoEventSource = new EventSource(`${echoClientBaseUrl}/leaderboard`)
 
   isAudioLag: boolean = isSafari();
 
@@ -60,7 +73,7 @@ class Playground extends React.Component {
   lastRandomIndex: number | null = null; // Track the last random index
 
   componentDidMount() {
-    this.getLastYaho();
+    // this.getLastYaho();
 
     const storedCount = localStorage.getItem('count');
     if (storedCount) {
@@ -79,14 +92,16 @@ class Playground extends React.Component {
       this.syncYahoo();
     }, 10e3);
 
-    this.getLastYahoInterval = setInterval(() => {
-      this.getLastYaho();
-    }, 30e3);
+    // this.getLastYahoInterval = setInterval(() => {
+    //   this.getLastYaho();
+    // }, 30e3);
 
     // Add event listeners
     window.addEventListener('click', this.increment);
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
+
+    this.echoEventSource.addEventListener("message", this.onEchoMessage);
   }
 
   componentWillUnmount() {
@@ -98,6 +113,9 @@ class Playground extends React.Component {
     window.removeEventListener('click', this.increment);
     window.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('keyup', this.handleKeyUp);
+
+    this.echoEventSource.close();
+    this.echoEventSource.removeEventListener("message", this.onEchoMessage);
   }
 
   handleKeyDown = (event: KeyboardEvent) => {
@@ -126,26 +144,75 @@ class Playground extends React.Component {
   }
 
   async syncYahoo() {
-    const { collectCount } = this.state;
+    const { collectCount, echoToken } = this.state;
     if(collectCount === 0) return;
 
-    const response = await fetch(this.apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ yaho: collectCount }),
+    const queryString = qs.stringify({
+      count: collectCount,
+      token: echoToken,
     });
+    try {
+      const response = await this.echoClient.post(`pops?${queryString}`);
 
-    const data = await response.json();
-
-    if(data.status === true) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = await response.json();
+      const countAppended = data.pops?.count_append ?? 0;
+      console.log(data)
+      
       this.setState({
-        globalCount: data.data.yaho,
-        collectCount: 0,
+        echoToken: data.new_token ?? '',
+      });
+
+      if(response.status == 202 && countAppended)  {
+        this.setState((prevState: IPlaygroundState) => ({
+          collectCount: prevState.collectCount - countAppended,
+        }));
+      }
+    } catch (error) {
+      console.error('Error syncing yaho:', error);
+      this.setState({
+        echoToken: '',
       });
     }
-    return data;
+    // return data;
+  }
+
+  onEchoMessage(response: MessageEvent) {
+    const { data: dataText } = response;
+    const dataJson = JSON.parse(dataText);
+  
+    const {
+      type: messageType,
+      pops: messagePops,
+    } = dataJson;
+  
+    switch (messageType) {
+      case "init_pop": {
+        const {
+          global_sum: initGlobalSum,
+        } = messagePops;
+  
+        this.setState({
+          globalCount: initGlobalSum,
+        })
+  
+        break;
+      }
+      case "next_pop": {
+        const {
+          count_append: countAppend,
+        } = messagePops;
+  
+        this.setState((prevState: IPlaygroundState) => {
+          const newGlobalCount = prevState.globalCount + countAppend;
+          return {
+            globalCount: newGlobalCount,
+          };
+        });
+  
+        break;
+      }
+    }
   }
 
   playSound = () => {
