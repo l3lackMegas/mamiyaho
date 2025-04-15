@@ -39,6 +39,11 @@ class Playground extends React.Component {
     soundUrlList: Array.from({ length: 12 }, (_, i) => `/sound/yafu${(i + 1).toString().padStart(3, '0')}.mp3`),
   };
 
+  constructor(props: React.PropsWithChildren<object>) {
+    super(props);
+    this.onEchoMessage = this.onEchoMessage.bind(this);
+  }
+
   echoClient: KyInstance = echoClient;
   echoApiUrl: string = `${echoClientBaseUrl}/leaderboard`;
   echoEventSource = new EventSource(`${echoClientBaseUrl}/leaderboard`)
