@@ -1,54 +1,38 @@
-# React + TypeScript + Vite
+# Mami Yaho
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+Dev
+```bash
+yarn install
+yarn dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+Build
+```bash
+yarn build
 ```
+
+# License
+This project uses two different types of licenses, separating Source Code and Assets:
+
+### 1. Source Code
+All source code files in this repository are licensed under the MIT License.
+You are free to use, modify, distribute, and include this code in your own projects, both personal and commercial, as long as the original license and copyright notice are included.
+
+### 2. Assets
+The following asset files are not covered by the MIT License:
+
+```bash
+/public/mami/*
+/public/sound/*
+/public/banner.jpg
+/public/bg.jpg
+/public/favicon.png
+```
+These files are provided for use only within this project and are copyrighted by MamiMumei.
+You may not reuse, modify, or redistribute these assets in your own projects without explicit permission from the original creator.
+
+Facebook: https://www.facebook.com/profile.php?id=61571916983467
+
+YouTube: https://www.youtube.com/@MamiMumeiCh
+
+Please respect the rights of the original creator when using or sharing this project.
