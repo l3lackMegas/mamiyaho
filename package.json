@@ -12,12 +12,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google-recaptcha/react": "^2.1.1",
     "ky": "^1.8.1",
     "motion": "^12.6.5",
     "query-string": "^9.1.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-google-recaptcha": "^3.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
