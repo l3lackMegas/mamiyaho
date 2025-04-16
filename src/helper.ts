@@ -9,3 +9,11 @@ export const numFormatter = (num: number) => {
 export const isSafari = () => {
   return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 }
+
+export function isMobileOrTablet(): boolean {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return (
+    /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent) || 
+    (navigator.maxTouchPoints > 1)
+  );
+};

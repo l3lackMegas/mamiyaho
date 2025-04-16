@@ -2,7 +2,7 @@ import React from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import MamiTheBean from './Mami/MamiTheBean';
 import Mami01 from './Mami/Mami01';
-import { isSafari, numFormatter } from '../helper';
+import { isMobileOrTablet, numFormatter } from '../helper';
 
 interface IPlaygroundState {
   globalCount: number;
@@ -30,7 +30,7 @@ class Playground extends React.Component {
     soundUrlList: Array.from({ length: 12 }, (_, i) => `/sound/yafu${(i + 1).toString().padStart(3, '0')}.mp3`),
   };
 
-  isAudioLag: boolean = isSafari();
+  isReduceLag: boolean = isMobileOrTablet();
 
   mamiImgList: string[] = [
     'Mami01',
@@ -183,18 +183,18 @@ class Playground extends React.Component {
       this.setState({ mamiList: [...mamiList, MamiElement] });
     };
 
-    if (!this.isAudioLag) {
+    if (!this.isReduceLag) {
       addMamiImage();
-    } else if (this.isAudioLag && mamiList.length < 15) {
+    } else if (this.isReduceLag && mamiList.length < 15) {
       addMamiImage();
     }
 
-    if (!this.isAudioLag) {
+    if (!this.isReduceLag) {
       addMamiImage();
       const sound = new Audio(soundUrlList[randomIndex]);
       sound.volume = 0.4; // Set volume to 50%
       sound.play();
-    } else if (this.isAudioLag && this.currentPlaySoundCount < 4) {
+    } else if (this.isReduceLag && this.currentPlaySoundCount < 4) {
       this.currentPlaySoundCount++;
       const sound = new Audio(soundUrlList[randomIndex]);
       sound.play();
