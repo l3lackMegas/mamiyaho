@@ -171,7 +171,7 @@ class Playground extends React.Component {
 
     this.lastRandomIndex = randomIndex; // Update the last random index
 
-    const isMamiBean = randomIndex >= 12;
+    const isMamiBean = randomIndex > 12;
 
     const soundDuration = this.durationList[randomIndex] * 1000; // Convert to milliseconds
 
