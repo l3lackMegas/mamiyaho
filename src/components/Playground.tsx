@@ -27,7 +27,11 @@ class Playground extends React.Component {
     collectCount: 0,
     count: 0,
     mamiList: [],
-    soundUrlList: Array.from({ length: 12 }, (_, i) => `/sound/yafu${(i + 1).toString().padStart(3, '0')}.mp3`),
+    soundUrlList: [
+      ...Array.from({ length: 13 }, (_, i) => `/sound/yafu${(i + 1).toString().padStart(3, '0')}.mp3`),
+      ...Array.from({ length: 7 }, (_, i) => `/sound/bean-${(i + 1).toString().padStart(2, '0')}.mp3`),
+      '/sound/bean-urusai.mp3',
+    ],
   };
 
   isReduceLag: boolean = isMobileOrTablet();
@@ -53,6 +57,15 @@ class Playground extends React.Component {
     2, // yaafu011.mp3
     1, // yaafu012.mp3
     1, // yaafu013.mp3
+
+    1, // bean-01.mp3
+    1, // bean-02.mp3
+    1, // bean-03.mp3
+    3, // bean-04.mp3
+    1, // bean-05.mp3
+    1, // bean-06.mp3
+    1, // bean-07.mp3
+    3, // bean-urusai.mp3
   ];
 
   pressedKeys: Set<string> = new Set(); // Track currently pressed keys
@@ -158,6 +171,8 @@ class Playground extends React.Component {
 
     this.lastRandomIndex = randomIndex; // Update the last random index
 
+    const isMamiBean = randomIndex >= 12;
+
     const soundDuration = this.durationList[randomIndex] * 1000; // Convert to milliseconds
 
     const mamiSize = Math.max(200, Math.random() * (window.screen.height / 2));
@@ -171,7 +186,7 @@ class Playground extends React.Component {
     const addMamiImage = () => {
       const MamiElement = {
         id: `mami-${count}`,
-        imgType: this.mamiImgList[Math.floor(Math.random() * this.mamiImgList.length)],
+        imgType: this.mamiImgList[isMamiBean ? 1 : 0],
         top,
         left,
         size: mamiSize,
@@ -192,11 +207,12 @@ class Playground extends React.Component {
     if (!this.isReduceLag) {
       addMamiImage();
       const sound = new Audio(soundUrlList[randomIndex]);
-      sound.volume = 0.4; // Set volume to 50%
+      sound.volume = isMamiBean ? 0.3 : 0.4; // Set volume to 50%
       sound.play();
     } else if (this.isReduceLag && this.currentPlaySoundCount < 4) {
       this.currentPlaySoundCount++;
       const sound = new Audio(soundUrlList[randomIndex]);
+      sound.volume = isMamiBean ? 0.4 : 0.4; // Set volume to 50%
       sound.play();
 
       // ลดจำนวน currentPlaySoundCount เมื่อเสียงเล่นจบ
