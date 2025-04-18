@@ -142,23 +142,36 @@ class Playground extends React.Component {
     const { collectCount } = this.state;
     if(collectCount === 0) return;
 
-    const response = await fetch(this.apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ yaho: collectCount }),
-    });
-
-    const data = await response.json();
-
-    if(data.status === true) {
+    try {
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ yaho: collectCount }),
+      });
+  
+      const data = await response.json();
+  
+      if(data.status === true) {
+        this.setState({
+          globalCount: data.data.yaho,
+          collectCount: 0,
+        });
+      } else {
+        this.setState({
+          collectCount: 0,
+        });
+        this.getLastYaho();
+      }
+      return data;
+    } catch (error) {
+      console.error('Error syncing data:', error);
       this.setState({
-        globalCount: data.data.yaho,
         collectCount: 0,
       });
+      this.getLastYaho();
     }
-    return data;
   }
 
   playSound = () => {
